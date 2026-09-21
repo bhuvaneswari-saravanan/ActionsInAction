@@ -11,8 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "Hello World!"
-- name: Checkout
-  uses: actions/checkout@v3.7.0
-        run: |
-          echo "The repository ${{ github.repository }} contains the following files:"
-          tree
+- name: List files in repository
+  run: |
+    echo "The repository My-Custom-Repo-Name contains the following files:"
+    tree
