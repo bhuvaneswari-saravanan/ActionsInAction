@@ -10,8 +10,13 @@ jobs:
   MyFirstJob:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Hello World!"
-- name: List files in repository
-  run: |
-    echo "The repository My-Custom-Repo-Name contains the following files:"
-    tree
+      - name: Say Hello
+        run: echo "Hello World!"
+
+      - name: Checkout
+        uses: actions/checkout@v3.5.2
+
+      - name: List files in repository
+        run: |
+          echo "The repository My-Custom-Repo-Name contains the following files:"
+          tree
