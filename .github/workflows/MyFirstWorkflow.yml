@@ -1,22 +1,61 @@
-name: My First Workflow
+# GitHub Actions CI Workflow for Software Quality Assurance
+# File location: .github/workflows/main.yml
 
+name: SQA Continuous Integration Pipeline
+
+# Triggers for the workflow
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
+      - develop
+  pull_request:
+    branches: [main]
+
+# Environment variables using scalar data types
+env:
+  PROJECT_NAME: "CampusConnect"
+  BUILD_VERSION: 1.0.0
+  IS_PRODUCTION: false
 
 jobs:
-  MyFirstJob:
+  build-and-test:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Say Hello
-        run: echo "Hello World!"
+      # Step 1: Checkout the repository code
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-      - name: Checkout
-        uses: actions/checkout@v3.7.0
+      # Step 2: Set up Python runtime environment
+      - name: Set up Python Environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-      - name: List files in repository
+      # Step 3: Install project dependencies
+      - name: Install Dependencies
         run: |
-          echo "The repository My-Custom-Repo-Name contains the following files:"
-          tree
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov flake8
+
+      # Step 4: Run Static Code Analysis (Linting)
+      - name: Run Static Code Analysis (Flake8)
+        run: |
+          echo "Starting static code analysis for SQA compliance..."
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+
+      # Step 5: Execute Automated Test Suite and Code Coverage Check
+      - name: Run Unit Tests and Generate Coverage Report
+        run: |
+          echo "Executing automated test suite..."
+          pytest --cov=. --cov-report=term-missing
+
+      # Step 6: Multi-line Script Block demonstrating literal block scalar (|)
+      - name: Log SQA Audit Verification Summary
+        run: |
+          echo "---------------------------------------------------"
+          echo " SQA VERIFICATION PASSED                            "
+          echo " Project: ${{ env.PROJECT_NAME }}                  "
+          echo " Version: ${{ env.BUILD_VERSION }}                 "
+          echo "---------------------------------------------------"
